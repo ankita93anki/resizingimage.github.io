@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    html, body{
+      font-family:Helvetica,sans-serif;
+      margin-left:5%;
+      padding:0;
+  
+  }
+  .inputs,.wrapper
+  {
+      width:45%;
+      height:auto;
+      float:left;
+      margin:1em;
+  }
+  .wrapper
+  {
+      text-align:center;
+  }
+  input
+  {
+      display:table;
+      margin-bottom:1em;
+      width:60%;
+      font-size:16px;
+      border:2px solid #e67e22;
+      border-radius:5px;
+      padding:3px;
+  }
+  #file
+  {
+      width:0.1px;
+      height:0.1px;
+      opacity:0;
+  }
+  .upload,button
+  {
+     color:#fff;
+     background:#e67e22;
+     padding:5px;
+     border:2px solid #e67e22;
+     border-radius:5px;
+     font-size:20px;
+     cursor:pointer;
+  
+  }
+  </style>
+  <title>Image Resizer</title>
+</head>
+<body>
+
+  <div class="inputs">
+    <h2>Resize your Image</h2>
+    <form>
+      <label for="file" class="upload">Upload an Image</label>
+      <input type="file" id="file" accept="image/*" onchange="loadImage(event)">
+
+      <label>Width</label>
+      <input type="number" id="imWidth" placeholder="Enter width in px">
+
+      <label>Height</label>
+      <input type="number" id="imHeight" placeholder="Enter height in px">
+    </form>
+
+    <button type="submit" onclick="draw();">Preview Input Image</button>
+    <button type="submit" id="preview">Preview Output Image</button>
+  </div>
+
+  <div class="wrapper">
+    <canvas id="result">
+      <img src="" id="imgDisplayed" alt="">
+    </canvas>
+    <button id="down">Download</button>
+
+  </div>
+  <canvas id="myCanvas" width="900" height="700" style="border:2px solid #d3d3d3;">
+    <img src="" id="imgDis" alt=""/>
+</canvas>
+  <script>
+    const canvas = document.getElementById("result");
+const ctx = canvas.getContext("2d");
+
+function loadImage(event) {
+  const image = document.getElementById("imgDisplayed");
+  image.src = URL.createObjectURL(event.target.files[0]);
+}
+
+const preview = document.getElementById("preview");
+preview.addEventListener("click", prev);
+
+function prev() {
+  const image = document.getElementById("imgDisplayed");
+
+  const imWidth = document.getElementById("imWidth").value;
+  const imHeight = document.getElementById("imHeight").value;
+
+  canvas.width = imWidth;
+  canvas.height = imHeight;
+
+  ctx.drawImage(image, 0, 0, imWidth, imHeight);
+
+  form = document.querySelector("form");
+  form.reset();
+}
+function draw()
+{  
+    var ctx = document.getElementById("myCanvas").getContext("2d");  
+    const image = document.getElementById("imgDisplayed");
+    //image.src = URL.createObjectURL(event.target.files[0]);
+    ctx.drawImage(image,0,0);  
+}
+
+const down = document.querySelector("#down");
+down.addEventListener("click", downloadImage);
+
+function downloadImage(){
+  if(window.navigator.msSaveBlob) {
+    window.navigator.msSaveBlob(canvas.msToBlob(), "resizedImage.png");
+
+  } else {
+
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    a.href = canvas.toDataURL();
+
+    a.download = "resizedImage.png";
+    a.click();
+
+    document.body.removeChild(a);
+  }
+
+  window.location.reload();
+}
+
+  </script>
+
+</body>
+</html>
